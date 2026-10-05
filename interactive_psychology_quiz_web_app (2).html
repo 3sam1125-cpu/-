@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>【校園大數據】現代青年性格與行為深度交叉分析</title>
+    <style>
+        :root {
+            --primary: #f97316;
+            --primary-soft: #ffedd5;
+            --primary-border: #fdba74;
+            --bg-gradient: linear-gradient(135deg, #fef3c7 0%, #fed7aa 50%, #fde68a 100%);
+            --card-bg: #ffffff;
+            --text-main: #44403c;
+            --text-muted: #78716c;
+            --accent-orange: #ea580c;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: var(--card-bg);
+            width: 100%;
+            max-width: 460px;
+            border-radius: 24px;
+            padding: 32px 24px;
+            box-shadow: 0 12px 32px rgba(234, 88, 12, 0.15);
+            border: 2px solid #ffffff;
+            position: relative;
+        }
+
+        .step { display: none; }
+        .step.active { display: block; }
+
+        .progress-bar-box {
+            width: 100%;
+            height: 8px;
+            background-color: #f5f5f4;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            width: 20%;
+            background-color: var(--primary);
+            transition: width 0.3s ease;
+        }
+        .progress-text {
+            text-align: right;
+            font-size: 0.8rem;
+            color: var(--primary);
+            font-weight: bold;
+            margin-bottom: 16px;
+        }
+
+        .badge {
+            display: inline-block;
+            background-color: var(--primary-soft);
+            color: var(--primary);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            margin: 0 auto 16px;
+        }
+        .badge-wrapper { text-align: center; }
+
+        h1 { font-size: 1.35rem; margin-bottom: 10px; text-align: center; color: #292524; font-weight: 800; }
+        p.subtitle { font-size: 0.9rem; color: var(--text-muted); text-align: center; margin-bottom: 20px; line-height: 1.5; }
+
+        .privacy-box {
+            background-color: #fff7ed;
+            border: 1.5px dashed var(--primary-border);
+            border-radius: 14px;
+            padding: 14px 16px;
+            margin-bottom: 20px;
+        }
+        .privacy-title {
+            font-size: 0.85rem;
+            font-weight: 800;
+            color: var(--accent-orange);
+            margin-bottom: 6px;
+        }
+        .privacy-desc {
+            font-size: 0.8rem;
+            color: #78350f;
+            line-height: 1.5;
+            text-align: justify;
+        }
+
+        .input-group { margin-bottom: 16px; text-align: left; }
+        .input-row { display: flex; gap: 10px; }
+        label { display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 6px; font-weight: 600; }
+        select, input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 12px;
+            border: 1.5px solid var(--primary-border);
+            background-color: #fffdfa;
+            color: var(--text-main);
+            font-size: 0.95rem;
+            outline: none;
+        }
+        input:focus, select:focus { border-color: var(--primary); }
+
+        .vs-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin: 20px 0;
+        }
+        .quiz-btn {
+            width: 100%;
+            padding: 18px;
+            background-color: #ffffff;
+            border: 2px solid var(--primary-border);
+            border-radius: 16px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--text-main);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .quiz-btn:hover {
+            background-color: var(--primary-soft);
+            border-color: var(--primary);
+        }
+        .vs-tag {
+            text-align: center;
+            font-size: 0.85rem;
+            font-weight: 900;
+            color: var(--primary);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+        .choice-card {
+            padding: 20px 12px;
+            border-radius: 16px;
+            text-align: center;
+            cursor: pointer;
+            color: #ffffff;
+        }
+        .choice-card span { font-size: 1.5rem; display: block; margin-bottom: 6px; font-weight: 800; }
+        .choice-card p { font-size: 0.9rem; font-weight: 700; color: #ffffff; }
+
+        .card-a { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); }
+        .card-b { background: linear-gradient(135deg, #eab308 0%, #ca8a04 100%); }
+        .card-c { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); }
+        .card-d { background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); }
+
+        .loader-box { text-align: center; padding: 40px 0; }
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #ffedd5;
+            border-top: 5px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        .result-paragraph {
+            background: #fff8f6;
+            padding: 16px;
+            border-radius: 14px;
+            font-size: 0.92rem;
+            line-height: 1.7;
+            color: var(--text-main);
+            margin-bottom: 12px;
+            border-left: 4px solid var(--primary);
+            text-align: justify;
+        }
+
+        .rating-box { margin-top: 24px; text-align: center; }
+        .rating-box label { font-size: 0.9rem; font-weight: 700; color: var(--text-main); margin-bottom: 12px; display: block; }
+        .scale-btns { display: flex; justify-content: space-between; gap: 4px; }
+        .scale-btn {
+            flex: 1;
+            padding: 10px 0;
+            background: #f5f5f4;
+            border: 1px solid #e7e5e4;
+            color: var(--text-main);
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+        }
+        .scale-btn.active { background: var(--primary); color: white; }
+        
+        .footer-text { text-align: center; font-size: 0.75rem; color: var(--text-muted); margin-top: 24px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- 第一步 -->
+    <div class="step active" id="step1">
+        <div class="badge-wrapper"><span class="badge">✨ 心理學與大數據專案</span></div>
+        <h1>性格與社交行為交叉分析</h1>
+        <p class="subtitle">本系統結合「MBTI 認知功能」與「星盤相位」進行交叉算力分析，請先選擇基本資訊：</p>
+        
+        <div class="privacy-box">
+            <div class="privacy-title">📌 隱私與資料保護聲明</div>
+            <div class="privacy-desc">
+                本測驗僅作為心理學自主學習研究使用。班級座號資訊僅用於後續匿名數據對照與訪談聯繫，成果報告將全數進行去識別化處理，請安心填寫。
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label>身份類別 <span style="color:red;">*</span></label>
+            <select id="user-type" onchange="toggleSchoolFields()">
+                <option value="school">本校學生</option>
+                <option value="external">外校學生</option>
+            </select>
+        </div>
+
+        <!-- 本校欄位：包含年級、班級、座號 -->
+        <div id="school-fields">
+            <div class="input-group">
+                <label>年級 <span style="color:red;">*</span></label>
+                <select id="school-grade-level">
+                    <option value="">請選擇...</option>
+                    <option value="高一">高一</option>
+                    <option value="高二">高二</option>
+                    <option value="高三">高三</option>
+                    <option value="其他">其他</option>
+                </select>
+            </div>
+            <div class="input-group input-row">
+                <div style="flex: 1;">
+                    <label>班級 <span style="color:red;">*</span></label>
+                    <select id="class-num">
+                        <option value="">請選擇...</option>
+                        <option value="1">1 班</option><option value="2">2 班</option><option value="3">3 班</option>
+                        <option value="4">4 班</option><option value="5">5 班</option><option value="6">6 班</option>
+                        <option value="7">7 班</option><option value="8">8 班</option><option value="9">9 班</option>
+                        <option value="10">10 班</option><option value="11">11 班</option><option value="12">12 班</option>
+                        <option value="13">13 班</option><option value="14">14 班</option>
+                    </select>
+                </div>
+                <div style="flex: 1;">
+                    <label>座號 <span style="color:red;">*</span></label>
+                    <input type="number" id="seat-num" min="1" max="50" placeholder="1 ~ 50">
+                </div>
+            </div>
+        </div>
+
+        <!-- 外校欄位：學校名稱與年級 -->
+        <div id="external-fields" style="display: none;">
+            <div class="input-group">
+                <label>學校名稱 <span style="color:red;">*</span></label>
+                <input type="text" id="school-name" placeholder="例如：建國中學">
+            </div>
+            <div class="input-group">
+                <label>年級 <span style="color:red;">*</span></label>
+                <select id="grade-level">
+                    <option value="">請選擇...</option>
+                    <option value="高一">高一</option>
+                    <option value="高二">高二</option>
+                    <option value="高三">高三</option>
+                    <option value="其他">其他</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label>你的 MBTI 人格類型 <span style="color:red;">*</span></label>
+            <select id="mbti">
+                <option value="">請選擇...</option>
+                <optgroup label="───── 理性分析型 (NT) ─────">
+                    <option value="INTJ">INTJ (建築師)</option><option value="INTP">INTP (邏輯學家)</option>
+                    <option value="ENTJ">ENTJ (指揮官)</option><option value="ENTP">ENTP (辯論家)</option>
+                </optgroup>
+                <optgroup label="───── 理想共情型 (NF) ─────">
+                    <option value="INFJ">INFJ (提倡者)</option><option value="INFP">INFP (調停者)</option>
+                    <option value="ENFJ">ENFJ (主人公)</option><option value="ENFP">ENFP (競選者)</option>
+                </optgroup>
+                <optgroup label="───── 穩健秩序型 (SJ) ─────">
+                    <option value="ISTJ">ISTJ (物流師)</option><option value="ISFJ">ISFJ (守護者)</option>
+                    <option value="ESTJ">ESTJ (總經理)</option><option value="ESFJ">ESFJ (執政官)</option>
+                </optgroup>
+                <optgroup label="───── 靈活實踐型 (SP) ─────">
+                    <option value="ISTP">ISTP (鑑賞家)</option><option value="ISFP">ISFP (探險家)</option>
+                    <option value="ESTP">ESTP (企業家)</option><option value="ESFP">ESFP (表演者)</option>
+                </optgroup>
+                <optgroup label="───── 其他 ─────">
+                    <option value="未測量或不清楚">不清楚 / 忘記了 / 沒測過</option>
+                </optgroup>
+            </select>
+        </div>
+        
+        <div class="input-group">
+            <label>你的太陽星座 <span style="color:red;">*</span></label>
+            <select id="zodiac">
+                <option value="">請選擇...</option>
+                <option value="火象">牡羊座 / 獅子座 / 射手座 (火象)</option>
+                <option value="土象">金牛座 / 處女座 / 摩羯座 (土象)</option>
+                <option value="風象">雙子座 / 天秤座 / 水瓶座 (風象)</option>
+                <option value="水象">巨蟹座 / 天蠍座 / 雙魚座 (水象)</option>
+            </select>
+        </div>
+        
+        <button class="btn" onclick="validateStep1()">開始 5 題直覺測驗</button>
+    </div>
+
+    <!-- Q1 -->
+    <div class="step" id="step2">
+        <div class="progress-bar-box"><div class="progress-fill" style="width: 20%;"></div></div>
+        <div class="progress-text">1 / 5</div>
+        <div class="badge-wrapper"><span class="badge">🧩 社交抉擇</span></div>
+        <h1>「週末夜晚」你會選擇？</h1>
+        <div class="vs-wrapper">
+            <button class="quiz-btn" onclick="recordAnswer('q1', '在家充飽電'); nextStep(3);">在家充飽電，享受獨立空間</button>
+            <div class="vs-tag">VS</div>
+            <button class="quiz-btn" onclick="recordAnswer('q1', '熱鬧聚會'); nextStep(3);">熱鬧聚會，跟朋友熱血一下</button>
+        </div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="step" id="step3">
+        <div class="progress-bar-box"><div class="progress-fill" style="width: 40%;"></div></div>
+        <div class="progress-text">2 / 5</div>
+        <div class="badge-wrapper"><span class="badge">⚡ 處事風格</span></div>
+        <h1>「面對突發狀況」你的第一反應？</h1>
+        <div class="vs-wrapper">
+            <button class="quiz-btn" onclick="recordAnswer('q2', '分析原因'); nextStep(4);">立刻分析原因，尋找邏輯解法</button>
+            <div class="vs-tag">VS</div>
+            <button class="quiz-btn" onclick="recordAnswer('q2', '安撫情緒'); nextStep(4);">優先安撫情緒，觀察周遭感受</button>
+        </div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="step" id="step4">
+        <div class="progress-bar-box"><div class="progress-fill" style="width: 60%;"></div></div>
+        <div class="progress-text">3 / 5</div>
+        <div class="badge-wrapper"><span class="badge">🎯 決策偏好</span></div>
+        <h1>「規劃旅遊行程」你習慣？</h1>
+        <div class="vs-wrapper">
+            <button class="quiz-btn" onclick="recordAnswer('q3', '排好SOP'); nextStep(5);">條理分明，排好 SOP 與景點備案</button>
+            <div class="vs-tag">VS</div>
+            <button class="quiz-btn" onclick="recordAnswer('q3', '憑感覺探索'); nextStep(5);">憑當下感覺，隨興探索未知驚喜</button>
+        </div>
+    </div>
+
+    <!-- Q4 -->
+    <div class="step" id="step5">
+        <div class="progress-bar-box"><div class="progress-fill" style="width: 80%;"></div></div>
+        <div class="progress-text">4 / 5</div>
+        <div class="badge-wrapper"><span class="badge">💬 人際防線</span></div>
+        <h1>「遇到敷衍的人」你會？</h1>
+        <div class="vs-wrapper">
+            <button class="quiz-btn" onclick="recordAnswer('q4', '默默扣分'); nextStep(6);">內心默默扣分，保持客氣邊界</button>
+            <div class="vs-tag">VS</div>
+            <button class="quiz-btn" onclick="recordAnswer('q4', '當面點破'); nextStep(6);">直接當面點破，把話講清楚</button>
+        </div>
+    </div>
+
+    <!-- Q5 -->
+    <div class="step" id="step6">
+        <div class="progress-bar-box"><div class="progress-fill" style="width: 100%;"></div></div>
+        <div class="progress-text">5 / 5</div>
+        <div class="badge-wrapper"><span class="badge">🔮 最終直覺校準</span></div>
+        <h1>憑第一直覺，選擇一組靈魂符號：</h1>
+        <div class="card-grid" style="margin-top: 16px;">
+            <div class="choice-card card-a" onclick="startAnalysis('A')"><span>🔮 A</span><p>流動的脈絡</p></div>
+            <div class="choice-card card-b" onclick="startAnalysis('B')"><span>⚡ B</span><p>穩定的秩序</p></div>
+            <div class="choice-card card-c" onclick="startAnalysis('C')"><span>🌊 C</span><p>深層的洞察</p></div>
+            <div class="choice-card card-d" onclick="startAnalysis('D')"><span>🌌 D</span><p>自由的邊界</p></div>
+        </div>
+    </div>
+
+    <!-- 加載頁 -->
+    <div class="step" id="step7">
+        <div class="loader-box">
+            <div class="spinner"></div>
+            <h2 style="font-size: 1.1rem;">正在進行大數據運算...</h2>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 8px;">交叉比對 MBTI 軸線、星盤與 5 題直覺參數中...</p>
+        </div>
+    </div>
+
+    <!-- 結果頁 -->
+    <div class="step" id="step8">
+        <div class="badge-wrapper"><span class="badge">📊 專屬分析報告</span></div>
+        <h1>你的個人深度性格解析</h1>
+        <p class="subtitle" id="user-tag-result" style="color: var(--primary); font-weight: 700; margin-bottom: 16px;"></p>
+        
+        <div class="result-paragraph">
+            你是一個外表看起來冷靜穩定、講求和諧的人，但內心其實經常伴隨細微的波動。在團體或人際關係中，你習慣站在不同角度思考，也能注意到現場的氣氛變化——你很少只是來享受現成的，當遇到問題時，你往往會忍不住挺身而出、展現出負責任的一面。
+        </div>
+
+        <div class="result-paragraph">
+            你對自己在意的事情有著高度的堅持與要求，習慣想清楚、把細節處理到位。雖然你希望做事有一套明確的流程可以參考，但內心深處又極度抗拒死板的世俗束縛。有時候因為想顧慮的細節太多、想把事情做到最好，反而容易讓自己卡在選擇裡，花了很多精力跟自己較勁。
+        </div>
+
+        <div class="result-paragraph">
+            你對周遭環境與人際關係的情緒起伏有著雷達般的感知。很多時候，你實際說出口的話可能只是你心中所想的冰山一角——你習慣把深刻的想法藏在心裡，只講出最合適、最不傷害氣氛的內容。你非常看重人性的真實與互相尊重，因此對於流於表面的敷衍，內心會有一種本能的懷疑與精神潔癖。
+        </div>
+
+        <div class="rating-box">
+            <label>這份分析符合你真實性格的程度？(1-10分)</label>
+            <div class="scale-btns">
+                <button class="scale-btn" onclick="rate(2, event)">2</button>
+                <button class="scale-btn" onclick="rate(4, event)">4</button>
+                <button class="scale-btn" onclick="rate(6, event)">6</button>
+                <button class="scale-btn" onclick="rate(8, event)">8</button>
+                <button class="scale-btn" onclick="rate(10, event)">10</button>
+            </div>
+        </div>
+
+        <button class="btn" style="margin-top: 20px;" onclick="shareResult()">分享測驗給朋友</button>
+    </div>
+
+    <div class="footer-text">自主學習專案 — 現代青年性格觀察實驗</div>
+</div>
+
+<script>
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyt9QeG6zW5xQR-0nm20u7FFoDWsXdoY5heab5lpvtZwD3UC7sBjCwYXp13b3JRVw/exec";
+
+    let userAnswers = {};
+    let currentPayload = {};
+
+    function recordAnswer(question, answer) { userAnswers[question] = answer; }
+
+    function toggleSchoolFields() {
+        const type = document.getElementById('user-type').value;
+        document.getElementById('school-fields').style.display = (type === 'school') ? 'block' : 'none';
+        document.getElementById('external-fields').style.display = (type === 'school') ? 'none' : 'block';
+    }
+
+    function validateStep1() {
+        const userType = document.getElementById('user-type').value;
+        const mbti = document.getElementById('mbti').value;
+        const zodiac = document.getElementById('zodiac').value;
+
+        if (userType === 'school') {
+            const schoolGrade = document.getElementById('school-grade-level').value;
+            const classNum = document.getElementById('class-num').value;
+            const seatNum = document.getElementById('seat-num').value;
+            
+            if (!schoolGrade) return alert('請選擇你的年級！');
+            if (!classNum) return alert('請選擇你的班級！');
+            if (!seatNum || seatNum < 1 || seatNum > 50) return alert('請填寫正確的座號（1 ~ 50）！');
+        } else {
+            const schoolName = document.getElementById('school-name').value.trim();
+            const gradeLevel = document.getElementById('grade-level').value;
+            if (!schoolName) return alert('請填寫你的學校名稱！');
+            if (!gradeLevel) return alert('請選擇你的年級！');
+        }
+
+        if (!mbti) return alert('請選擇你的 MBTI 人格類型！');
+        if (!zodiac) return alert('請選擇你的太陽星座！');
+
+        nextStep(2);
+    }
+
+    function nextStep(stepNum) {
+        document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
+        document.getElementById('step' + stepNum).classList.add('active');
+        window.scrollTo(0,0);
+    }
+
+    function startAnalysis(choice) {
+        userAnswers['q5'] = choice;
+        nextStep(7);
+        
+        const userType = document.getElementById('user-type').value;
+        const isSchool = userType === 'school';
+        
+        currentPayload = {
+            userType: isSchool ? '本校學生' : '外校學生',
+            schoolOrClass: isSchool ? document.getElementById('class-num').value + ' 班' : document.getElementById('school-name').value,
+            seatOrGrade: isSchool ? (document.getElementById('school-grade-level').value + ' ' + document.getElementById('seat-num').value + ' 號') : document.getElementById('grade-level').value,
+            mbti: document.getElementById('mbti').value,
+            zodiac: document.getElementById('zodiac').value,
+            choice: `Q1:${userAnswers['q1']||''} | Q2:${userAnswers['q2']||''} | Q3:${userAnswers['q3']||''} | Q4:${userAnswers['q4']||''} | Q5:${choice}`,
+            rating: "尚未評分"
+        };
+
+        sendToGoogleSheet(currentPayload);
+
+        setTimeout(() => {
+            const mbti = currentPayload.mbti;
+            const zodiac = currentPayload.zodiac;
+            let tagText = (mbti === '未測量或不清楚') 
+                ? `【類型】直覺潛能型 × ${zodiac} (維度 ${choice})`
+                : `【類型】${mbti} × ${zodiac} (維度 ${choice})`;
+
+            document.getElementById('user-tag-result').innerText = tagText;
+            nextStep(8);
+        }, 1800);
+    }
+
+    function rate(score, event) {
+        document.querySelectorAll('.scale-btn').forEach(btn => btn.classList.remove('active'));
+        if (event && event.target) event.target.classList.add('active');
+
+        if (currentPayload) {
+            currentPayload.rating = score + " 分";
+            sendToGoogleSheet(currentPayload);
+        }
+        alert(`感謝評分！你給出了 ${score} 分，數據已納入研究集算。`);
+    }
+
+    function sendToGoogleSheet(payload) {
+        if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes("你的正確_APPS_SCRIPT_ID")) {
+            console.warn("尚未設定正確的 GOOGLE_SCRIPT_URL 網址！");
+            return;
+        }
+
+        fetch(GOOGLE_SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        }).catch(err => console.error("傳送至 Google 試算表失敗:", err));
+    }
+
+    function shareResult() {
+        const currentUrl = window.location.href;
+        if (navigator.share && window.isSecureContext) {
+            navigator.share({
+                title: '【校園大數據】現代青年性格與行為深度交叉分析',
+                text: '來測測看你的性格與社交行為交叉分析報告！',
+                url: currentUrl
+            }).catch(() => {});
+        } else {
+            prompt("請複製下方連結分享給朋友：", currentUrl);
+        }
+    }
+</script>
+
+</body>
+</html>
