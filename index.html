@@ -205,6 +205,12 @@
             border-left: 4px solid var(--primary);
             text-align: justify;
         }
+        .result-title {
+            font-weight: 800;
+            color: var(--accent-orange);
+            margin-bottom: 6px;
+            font-size: 0.95rem;
+        }
 
         .rating-box { margin-top: 24px; text-align: center; }
         .rating-box label { font-size: 0.9rem; font-weight: 700; color: var(--text-main); margin-bottom: 12px; display: block; }
@@ -249,7 +255,7 @@
             </select>
         </div>
 
-        <!-- 本校欄位：包含年級、班級、座號 -->
+        <!-- 本校欄位：年級、班級、座號 -->
         <div id="school-fields">
             <div class="input-group">
                 <label>年級 <span style="color:red;">*</span></label>
@@ -328,10 +334,18 @@
             <label>你的太陽星座 <span style="color:red;">*</span></label>
             <select id="zodiac">
                 <option value="">請選擇...</option>
-                <option value="火象">牡羊座 / 獅子座 / 射手座 (火象)</option>
-                <option value="土象">金牛座 / 處女座 / 摩羯座 (土象)</option>
-                <option value="風象">雙子座 / 天秤座 / 水瓶座 (風象)</option>
-                <option value="水象">巨蟹座 / 天蠍座 / 雙魚座 (水象)</option>
+                <option value="摩羯座">摩羯座 (Capricorn)</option>
+                 <option value="水瓶座">水瓶座 (Aquarius)</option>
+                 <option value="雙魚座">雙魚座 (Pisces)</option>
+                <option value="牡羊座">牡羊座 (Aries)</option>
+                <option value="金牛座">金牛座 (Taurus)</option>
+                <option value="雙子座">雙子座 (Gemini)</option>
+                <option value="巨蟹座">巨蟹座 (Cancer)</option>
+                <option value="獅子座">獅子座 (Leo)</option>
+                <option value="處女座">處女座 (Virgo)</option>
+                <option value="天秤座">天秤座 (Libra)</option>
+                <option value="天蠍座">天蠍座 (Scorpio)</option>
+                <option value="射手座">射手座 (Sagittarius)</option>    
             </select>
         </div>
         
@@ -420,15 +434,18 @@
         <p class="subtitle" id="user-tag-result" style="color: var(--primary); font-weight: 700; margin-bottom: 16px;"></p>
         
         <div class="result-paragraph">
-            你是一個外表看起來冷靜穩定、講求和諧的人，但內心其實經常伴隨細微的波動。在團體或人際關係中，你習慣站在不同角度思考，也能注意到現場的氣氛變化——你很少只是來享受現成的，當遇到問題時，你往往會忍不住挺身而出、展現出負責任的一面。
+            <div class="result-title">【主要性格解析】</div>
+            你是一個外表看起來冷靜穩定、講求和諧的人，但內心其實經常伴隨細微的波動。在團體或人際關係中，你習慣站在不同角度思考，也能敏銳察覺氣氛的變化——你很少只是來享受現成的，當遇到問題時，你往往會忍不住挺身而出、展現出負責任的一面。你習慣將深刻的想法藏在心底，實際說出口的內容往往只是你心中所想的冰山一角。
         </div>
 
         <div class="result-paragraph">
-            你對自己在意的事情有著高度的堅持與要求，習慣想清楚、把細節處理到位。雖然你希望做事有一套明確的流程可以參考，但內心深處又極度抗拒死板的世俗束縛。有時候因為想顧慮的細節太多、想把事情做到最好，反而容易讓自己卡在選擇裡，花了很多精力跟自己較勁。
+            <div class="result-title">【你的核心優勢】</div>
+            你的優勢在於兼具了對人的共情能力與對事的專注度。你對自己在意的事情有著高度的堅持與要求，習慣想清楚、把細節處理到位。在團隊中，你既能理解不同立場的人、保持互相尊重，也能在關鍵時刻發現別人忽略的盲點並給予改善。
         </div>
 
         <div class="result-paragraph">
-            你對周遭環境與人際關係的情緒起伏有著雷達般的感知。很多時候，你實際說出口的話可能只是你心中所想的冰山一角——你習慣把深刻的想法藏在心裡，只講出最合適、最不傷害氣氛的內容。你非常看重人性的真實與互相尊重，因此對於流於表面的敷衍，內心會有一種本能的懷疑與精神潔癖。
+            <div class="result-title">【需要留意的盲點】</div>
+            雖然你希望做事有一套明確的 SOP 可以參考，但內心深處又極度抗拒死板的世俗束縛。因為想顧慮的面向與細節太多、想把事情做到最好，有時反而容易讓自己卡在選擇與調整裡，花了很多精力跟自己較勁。面對流於表面的敷衍，內心容易產生本能的懷疑與精神潔癖，這也是讓你感到內心疲累的主因。
         </div>
 
         <div class="rating-box">
