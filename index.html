@@ -380,73 +380,72 @@
         
         <button class="btn" onclick="validateStep1()">開始 5 題直覺測驗</button>
     </div>
-
-    <!-- Q1 -->
-    <div class="step" id="step2">
-        <div class="progress-bar-box"><div class="progress-fill" style="width: 20%;"></div></div>
-        <div class="progress-text">1 / 5</div>
-        <div class="badge-wrapper"><span class="badge">🧩 社交抉擇</span></div>
-        <h1>「週末夜晚」你會選擇？</h1>
-        <div class="vs-wrapper">
-            <button class="quiz-btn" onclick="recordAnswer('q1', '在家充飽電'); nextStep(3);">在家充飽電，享受獨立空間</button>
-            <div class="vs-tag">VS</div>
-            <button class="quiz-btn" onclick="recordAnswer('q1', '熱鬧聚會'); nextStep(3);">熱鬧聚會，跟朋友熱血一下</button>
-        </div>
+   <!-- Q1 -->
+<div class="step" id="step2">
+    <div class="progress-bar-box"><div class="progress-fill" style="width: 20%;"></div></div>
+    <div class="progress-text">1 / 5</div>
+    <div class="badge-wrapper"><span class="badge">🧩 社交充電站</span></div>
+    <h1>結束超累的校園園遊會，回到家你通常會？</h1>
+    <div class="vs-wrapper">
+        <button class="quiz-btn" onclick="recordAnswer('q1', '獨處充電'); nextStep(3);">躲進房間關燈聽歌，享受一個人的避風港</button>
+        <div class="vs-tag">VS</div>
+        <button class="quiz-btn" onclick="recordAnswer('q1', '群組熱炒'); nextStep(3);">邊回味限時動態，邊在群組跟朋友續攤狂聊</button>
     </div>
+</div>
 
-    <!-- Q2 -->
-    <div class="step" id="step3">
-        <div class="progress-bar-box"><div class="progress-fill" style="width: 40%;"></div></div>
-        <div class="progress-text">2 / 5</div>
-        <div class="badge-wrapper"><span class="badge">⚡ 處事風格</span></div>
-        <h1>「面對突發狀況」你的第一反應？</h1>
-        <div class="vs-wrapper">
-            <button class="quiz-btn" onclick="recordAnswer('q2', '分析原因'); nextStep(4);">立刻分析原因，尋找邏輯解法</button>
-            <div class="vs-tag">VS</div>
-            <button class="quiz-btn" onclick="recordAnswer('q2', '安撫情緒'); nextStep(4);">優先安撫情緒，觀察周遭感受</button>
-        </div>
+<!-- Q2 -->
+<div class="step" id="step3">
+    <div class="progress-bar-box"><div class="progress-fill" style="width: 40%;"></div></div>
+    <div class="progress-text">2 / 5</div>
+    <div class="badge-wrapper"><span class="badge">⚡ 思考專注度</span></div>
+    <h1>段考前複習到一半，腦海突然跳出一個酷想法…</h1>
+    <div class="vs-wrapper">
+        <button class="quiz-btn" onclick="recordAnswer('q2', '拉回現實'); nextStep(4);">「考試要緊！」拉回注意力，按進度劃重點</button>
+        <div class="vs-tag">VS</div>
+        <button class="quiz-btn" onclick="recordAnswer('q2', '順思發散'); nextStep(4);">「這太酷了！」順著靈感天馬行空開始發散</button>
     </div>
+</div>
 
-    <!-- Q3 -->
-    <div class="step" id="step4">
-        <div class="progress-bar-box"><div class="progress-fill" style="width: 60%;"></div></div>
-        <div class="progress-text">3 / 5</div>
-        <div class="badge-wrapper"><span class="badge">🎯 決策偏好</span></div>
-        <h1>「規劃旅遊行程」你習慣？</h1>
-        <div class="vs-wrapper">
-            <button class="quiz-btn" onclick="recordAnswer('q3', '排好SOP'); nextStep(5);">條理分明，排好 SOP 與景點備案</button>
-            <div class="vs-tag">VS</div>
-            <button class="quiz-btn" onclick="recordAnswer('q3', '憑感覺探索'); nextStep(5);">憑當下感覺，隨興探索未知驚喜</button>
-        </div>
+<!-- Q3 -->
+<div class="step" id="step4">
+    <div class="progress-bar-box"><div class="progress-fill" style="width: 60%;"></div></div>
+    <div class="progress-text">3 / 5</div>
+    <div class="badge-wrapper"><span class="badge">🎯 團隊溝通</span></div>
+    <h1>分組報告有組員進度落後且品質欠佳，你會？</h1>
+    <div class="vs-wrapper">
+        <button class="quiz-btn" onclick="recordAnswer('q3', '對事理性'); nextStep(5);">對事不對人，直接指出問題並要求限時改正</button>
+        <div class="vs-tag">VS</div>
+        <button class="quiz-btn" onclick="recordAnswer('q3', '同理關懷'); nextStep(5);">先關心他的狀況，委婉給予協助與建議</button>
     </div>
+</div>
 
-    <!-- Q4 -->
-    <div class="step" id="step5">
-        <div class="progress-bar-box"><div class="progress-fill" style="width: 80%;"></div></div>
-        <div class="progress-text">4 / 5</div>
-        <div class="badge-wrapper"><span class="badge">💬 人際防線</span></div>
-        <h1>「遇到敷衍的人」你會？</h1>
-        <div class="vs-wrapper">
-            <button class="quiz-btn" onclick="recordAnswer('q4', '默默扣分'); nextStep(6);">內心默默扣分，保持客氣邊界</button>
-            <div class="vs-tag">VS</div>
-            <button class="quiz-btn" onclick="recordAnswer('q4', '當面點破'); nextStep(6);">直接當面點破，把話講清楚</button>
-        </div>
+<!-- Q4 -->
+<div class="step" id="step5">
+    <div class="progress-bar-box"><div class="progress-fill" style="width: 80%;"></div></div>
+    <div class="progress-text">4 / 5</div>
+    <div class="badge-wrapper"><span class="badge">💬 生活節奏</span></div>
+    <h1>面對難得的連續假期，你習慣如何安排？</h1>
+    <div class="vs-wrapper">
+        <button class="quiz-btn" onclick="recordAnswer('q4', '進度清單'); nextStep(6);">寫好 To-do list，按部就班完成才有成就感</button>
+        <div class="vs-tag">VS</div>
+        <button class="quiz-btn" onclick="recordAnswer('q4', '隨興探索'); nextStep(6);">拒絕被框架約束，看當下心情想做什麼就做什麼</button>
     </div>
+</div>
 
-    <!-- Q5 -->
-    <div class="step" id="step6">
-        <div class="progress-bar-box"><div class="progress-fill" style="width: 100%;"></div></div>
-        <div class="progress-text">5 / 5</div>
-        <div class="badge-wrapper"><span class="badge">🔮 最終直覺校準</span></div>
-        <h1>憑第一直覺，選擇一組靈魂符號：</h1>
-        <div class="card-grid" style="margin-top: 16px;">
-            <div class="choice-card card-a" onclick="startAnalysis('A')"><span>🔮 A</span><p>流動的脈絡</p></div>
-            <div class="choice-card card-b" onclick="startAnalysis('B')"><span>⚡ B</span><p>穩定的秩序</p></div>
-            <div class="choice-card card-c" onclick="startAnalysis('C')"><span>🌊 C</span><p>深層的洞察</p></div>
-            <div class="choice-card card-d" onclick="startAnalysis('D')"><span>🌌 D</span><p>自由的邊界</p></div>
-        </div>
+<!-- Q5 -->
+<div class="step" id="step6">
+    <div class="progress-bar-box"><div class="progress-fill" style="width: 100%;"></div></div>
+    <div class="progress-text">5 / 5</div>
+    <div class="badge-wrapper"><span class="badge">🔮 覺醒圖騰擇一</span></div>
+    <h1>憑第一直覺，哪一個圖騰最能代表你的靈魂？</h1>
+    <div class="card-grid" style="margin-top: 16px;">
+        <div class="choice-card card-a" onclick="startAnalysis('A')"><span>🔮 A</span><p>熾烈之火<br><small style="font-size: 0.75rem; opacity: 0.8;">突破與熱情</small></p></div>
+        <div class="choice-card card-b" onclick="startAnalysis('B')"><span>⚡ B</span><p>靜止之岩<br><small style="font-size: 0.75rem; opacity: 0.8;">秩序與原則</small></p></div>
+        <div class="choice-card card-c" onclick="startAnalysis('C')"><span>🌊 C</span><p>深海之鏡<br><small style="font-size: 0.75rem; opacity: 0.8;">洞察與共情</small></p></div>
+        <div class="choice-card card-d" onclick="startAnalysis('D')"><span>🌌 D</span><p>自由之風<br><small style="font-size: 0.75rem; opacity: 0.8;">隨性與可能性</small></p></div>
     </div>
-
+</div>
+    
     <!-- 加載頁 -->
     <div class="step" id="step7">
         <div class="loader-box">
