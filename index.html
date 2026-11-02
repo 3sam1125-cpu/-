@@ -133,7 +133,7 @@
     select, input {
         width: 100% !important;
         max-width: 100% !important;
-        min-width: 0 !important; /* 關鍵：讓 flex 子元素可以縮小到小於內容 */
+        min-width: 0 !important;
         padding: 12px;
         border-radius: 12px;
         border: 1.5px solid var(--primary-border);
@@ -268,7 +268,6 @@
         outline: none;
         cursor: pointer;
     }
-    /* 小白點拖曳鈕 (Chrome / Safari / Edge / 行動端 Webview) */
     #score-slider::-webkit-slider-thumb {
         -webkit-appearance: none;
         appearance: none;
@@ -284,7 +283,6 @@
     #score-slider::-webkit-slider-thumb:hover {
         transform: scale(1.15);
     }
-    /* 小白點拖曳鈕 (Firefox) */
     #score-slider::-moz-range-thumb {
         width: 24px;
         height: 24px;
@@ -367,12 +365,8 @@
             </div>
         </div>
 
-        <!-- 外校欄位：學校名稱與年級 -->
+        <!-- 外校欄位：僅保留年級 -->
         <div id="external-fields" style="display: none;">
-            <div class="input-group">
-                <label>學校名稱 <span style="color:red;">*</span></label>
-                <input type="text" id="school-name" placeholder="例如：建國中學">
-            </div>
             <div class="input-group">
                 <label>年級 <span style="color:red;">*</span></label>
                 <select id="grade-level">
@@ -542,4 +536,152 @@
 
             <div id="score-display" class="score-display-text">👈 請拉動小白點進行評分</div>
             
-            <button id="submit-score-btn" class="btn" style="margin-top: 12px; background-color: var(--primary); opacity
+            <button id="submit-score-btn" class="btn" style="margin-top: 12px; background-color: var(--primary); opacity: 0.5; cursor: not-allowed;" disabled onclick="submitSliderRating()">確認送出評分</button>
+        </div>
+
+        <button class="btn" style="margin-top: 20px;" onclick="shareResult()">分享測驗給朋友</button>
+    </div>
+
+    <div class="footer-text">自主學習專案 — 現代青年性格觀察實驗</div>
+</div>
+
+<script>
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyt9QeG6zW5xQR-0nm20u7FFoDWsXdoY5heab5lpvtZwD3UC7sBjCwYXp13b3JRVw/exec";
+
+    let userAnswers = {};
+    let currentPayload = {};
+    let hasMovedSlider = false;
+    let currentSliderScore = 5;
+
+    function recordAnswer(question, answer) { userAnswers[question] = answer; }
+
+    function toggleSchoolFields() {
+        const type = document.getElementById('user-type').value;
+        document.getElementById('school-fields').style.display = (type === 'school') ? 'block' : 'none';
+        document.getElementById('external-fields').style.display = (type === 'school') ? 'none' : 'block';
+    }
+function validateStep1() {
+        const userType = document.getElementById('user-type').value;
+        const mbti = document.getElementById('mbti').value;
+        const zodiac = document.getElementById('zodiac').value;
+
+        if (userType === 'school') {
+            const schoolGrade = document.getElementById('school-grade-level').value;
+            const classNum = document.getElementById('class-num').value;
+            const seatNum = parseInt(document.getElementById('seat-num').value, 10);
+
+            if (!schoolGrade) return alert('請選擇你的年級！');
+            if (!classNum) return alert('請選擇你的班級！');
+            if (isNaN(seatNum) || seatNum < 1 || seatNum > 39) return alert('請填寫正確的座號（1 ~ 39）！');
+        } else {
+            const gradeLevel = document.getElementById('grade-level').value;
+            if (!gradeLevel) return alert('請選擇你的年級！');
+        }
+
+        if (!mbti) return alert('請選擇你的 MBTI 人格類型！');
+        if (!zodiac) return alert('請選擇你的太陽星座！');
+
+        nextStep(2);
+    }
+function nextStep(stepNum) {
+        document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
+        document.getElementById('step' + stepNum).classList.add('active');
+        window.scrollTo(0,0);
+    }
+
+    function startAnalysis(choice) {
+        userAnswers['q5'] = choice;
+        nextStep(7);
+
+        const userType = document.getElementById('user-type').value;
+        const isSchool = userType === 'school';
+
+        currentPayload = {
+            userType: isSchool ? '本校學生' : '外校學生',
+            schoolOrClass: isSchool ? document.getElementById('class-num').value + ' 班' : '外校',
+            seatOrGrade: isSchool ? (document.getElementById('school-grade-level').value + ' ' + document.getElementById('seat-num').value + ' 號') : document.getElementById('grade-level').value,
+            mbti: document.getElementById('mbti').value,
+            zodiac: document.getElementById('zodiac').value,
+            choice: `Q1:${userAnswers['q1']||''} | Q2:${userAnswers['q2']||''} | Q3:${userAnswers['q3']||''} | Q4:${userAnswers['q4']||''} | Q5:${choice}`,
+            rating: "尚未評分"
+        };
+
+        sendToGoogleSheet(currentPayload);
+setTimeout(() => {
+            const mbti = currentPayload.mbti;
+            const zodiac = currentPayload.zodiac;
+            let tagText = (mbti === '未測量或不清楚') 
+                ? `【類型】直覺潛能型 × ${zodiac} (維度 ${choice})`
+                : `【類型】${mbti} × ${zodiac} (維度 ${choice})`;
+
+            document.getElementById('user-tag-result').innerText = tagText;
+            nextStep(8);
+        }, 1800);
+    }
+
+    // 當使用者拉動滑桿時觸發
+    function onSliderMove(val) {
+        hasMovedSlider = true;
+        currentSliderScore = val;
+        
+        // 即時更新數值顯示
+        const displayEl = document.getElementById('score-display');
+        displayEl.innerText = `當前評分： ${val} 分`;
+        
+        // 解鎖評分按鈕
+        const btn = document.getElementById('submit-score-btn');
+        btn.disabled = false;
+        btn.style.opacity = '1';
+        btn.style.cursor = 'pointer';
+    }
+// 點擊按鈕送出評分
+    function submitSliderRating() {
+        if (!hasMovedSlider) {
+            alert("請先拉動小白點選擇評分！");
+            return;
+        }
+
+        if (currentPayload) {
+            currentPayload.rating = currentSliderScore + " 分";
+            sendToGoogleSheet(currentPayload);
+        }
+        
+        alert(`感謝評分！你給出了 ${currentSliderScore} 分，數據已納入研究集算。`);
+        
+        // 送出後鎖定按鈕，避免重複按壓寫入
+        const btn = document.getElementById('submit-score-btn');
+        btn.innerText = "已完成評分 ✓";
+        btn.disabled = true;
+        btn.style.opacity = '0.6';
+        btn.style.cursor = 'default';
+    }
+
+    function sendToGoogleSheet(payload) {
+        if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes("你的正確_APPS_SCRIPT_ID")) {
+            console.warn("尚未設定正確的 GOOGLE_SCRIPT_URL 網址！");
+            return;
+        }
+fetch(GOOGLE_SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        }).catch(err => console.error("傳送至 Google 試算表失敗:", err));
+    }
+
+    function shareResult() {
+        const currentUrl = window.location.href;
+        if (navigator.share && window.isSecureContext) {
+            navigator.share({
+                title: '【校園大數據】現代青年性格與行為深度交叉分析',
+                text: '來測測看你的性格與社交行為交叉分析報告！',
+                url: currentUrl
+            }).catch(() => {});
+        } else {
+            prompt("請複製下方連結分享給朋友：", currentUrl);
+        }
+    }
+</script>
+
+</body>
+</html>
