@@ -551,6 +551,7 @@
     let userAnswers = {};
     let currentPayload = {};
     let hasMovedSlider = false;
+    let hasSubmittedRating = false; // 新增：記錄是否已提交過評分
     let currentSliderScore = 5;
 
     function recordAnswer(question, answer) { userAnswers[question] = answer; }
@@ -560,7 +561,8 @@
         document.getElementById('school-fields').style.display = (type === 'school') ? 'block' : 'none';
         document.getElementById('external-fields').style.display = (type === 'school') ? 'none' : 'block';
     }
-function validateStep1() {
+
+    function validateStep1() {
         const userType = document.getElementById('user-type').value;
         const mbti = document.getElementById('mbti').value;
         const zodiac = document.getElementById('zodiac').value;
@@ -583,7 +585,8 @@ function validateStep1() {
 
         nextStep(2);
     }
-function nextStep(stepNum) {
+
+    function nextStep(stepNum) {
         document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
         document.getElementById('step' + stepNum).classList.add('active');
         window.scrollTo(0,0);
@@ -607,7 +610,8 @@ function nextStep(stepNum) {
         };
 
         sendToGoogleSheet(currentPayload);
-setTimeout(() => {
+
+        setTimeout(() => {
             const mbti = currentPayload.mbti;
             const zodiac = currentPayload.zodiac;
             let tagText = (mbti === '未測量或不清楚') 
@@ -621,6 +625,8 @@ setTimeout(() => {
 
     // 當使用者拉動滑桿時觸發
     function onSliderMove(val) {
+        if (hasSubmittedRating) return; // 如果已經評分過，不進行任何操作
+
         hasMovedSlider = true;
         currentSliderScore = val;
         
@@ -634,12 +640,17 @@ setTimeout(() => {
         btn.style.opacity = '1';
         btn.style.cursor = 'pointer';
     }
-// 點擊按鈕送出評分
+
+    // 點擊按鈕送出評分
     function submitSliderRating() {
+        if (hasSubmittedRating) return;
+
         if (!hasMovedSlider) {
             alert("請先拉動小白點選擇評分！");
             return;
         }
+
+        hasSubmittedRating = true; // 設為已完成評分
 
         if (currentPayload) {
             currentPayload.rating = currentSliderScore + " 分";
@@ -648,12 +659,20 @@ setTimeout(() => {
         
         alert(`感謝評分！你給出了 ${currentSliderScore} 分，數據已納入研究集算。`);
         
-        // 送出後鎖定按鈕，避免重複按壓寫入
+        // 1. 鎖定按鈕並更新文字
         const btn = document.getElementById('submit-score-btn');
         btn.innerText = "已完成評分 ✓";
         btn.disabled = true;
         btn.style.opacity = '0.6';
         btn.style.cursor = 'default';
+
+        // 2. 鎖定滑桿拉動功能
+        const slider = document.getElementById('score-slider');
+        slider.disabled = true;
+        slider.style.cursor = 'default';
+
+        // 3. 更新提示文字
+        document.getElementById('score-display').innerText = `評分已鎖定： ${currentSliderScore} 分`;
     }
 
     function sendToGoogleSheet(payload) {
@@ -661,7 +680,8 @@ setTimeout(() => {
             console.warn("尚未設定正確的 GOOGLE_SCRIPT_URL 網址！");
             return;
         }
-fetch(GOOGLE_SCRIPT_URL, {
+
+        fetch(GOOGLE_SCRIPT_URL, {
             method: 'POST',
             mode: 'no-cors',
             headers: { 'Content-Type': 'application/json' },
