@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>【校園大數據】現代青年性格與行為深度交叉分析</title>
-  <style>
+<style>
     :root {
         --primary: #f97316;
         --primary-soft: #ffedd5;
@@ -128,7 +128,7 @@
     .input-group { margin-bottom: 16px; text-align: left; width: 100%; }
     .input-row { display: flex; gap: 10px; width: 100%; }
     label { display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 6px; font-weight: 600; }
-    
+
     /* 4. 重置表單元素防爆開 */
     select, input {
         width: 100% !important;
@@ -241,22 +241,74 @@
         font-size: 0.95rem;
     }
 
-    .rating-box { margin-top: 24px; text-align: center; width: 100%; }
-    .rating-box label { font-size: 0.9rem; font-weight: 700; color: var(--text-main); margin-bottom: 12px; display: block; }
-    .scale-btns { display: flex; justify-content: space-between; gap: 4px; width: 100%; }
-    .scale-btn {
-        flex: 1;
-        min-width: 0;
-        padding: 10px 0;
-        background: #f5f5f4;
-        border: 1px solid #e7e5e4;
-        color: var(--text-main);
-        border-radius: 8px;
-        cursor: pointer;
-        font-weight: 700;
+    /* 評分滑桿組件樣式 */
+    .rating-box {
+        margin-top: 24px;
+        text-align: center;
+        width: 100%;
     }
-    .scale-btn.active { background: var(--primary); color: white; }
-    
+    .rating-box label {
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: var(--text-main);
+        margin-bottom: 12px;
+        display: block;
+    }
+    .slider-wrapper {
+        width: 100%;
+        margin: 16px 0 8px;
+    }
+    #score-slider {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 100%;
+        height: 8px;
+        border-radius: 5px;
+        background: #fed7aa;
+        outline: none;
+        cursor: pointer;
+    }
+    /* 小白點拖曳鈕 (Chrome / Safari / Edge / 行動端 Webview) */
+    #score-slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: #ffffff;
+        border: 3px solid var(--primary);
+        box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        cursor: pointer;
+        transition: transform 0.1s ease;
+    }
+    #score-slider::-webkit-slider-thumb:hover {
+        transform: scale(1.15);
+    }
+    /* 小白點拖曳鈕 (Firefox) */
+    #score-slider::-moz-range-thumb {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: #ffffff;
+        border: 3px solid var(--primary);
+        box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        cursor: pointer;
+    }
+    .slider-labels {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        margin-top: 6px;
+    }
+    .score-display-text {
+        font-size: 0.95rem;
+        font-weight: 800;
+        color: var(--accent-orange);
+        margin: 10px 0;
+        min-height: 24px;
+    }
+
     .footer-text { text-align: center; font-size: 0.75rem; color: var(--text-muted); margin-top: 24px; }
 </style>
 </head>
@@ -269,7 +321,7 @@
         <div class="badge-wrapper"><span class="badge">✨ 心理學與大數據專案</span></div>
         <h1>性格與社交行為交叉分析</h1>
         <p class="subtitle">本系統結合「MBTI 認知功能」與「星盤相位」進行交叉算力分析，請先選擇基本資訊：</p>
-        
+
         <div class="privacy-box">
             <div class="privacy-title">📌 隱私與資料保護聲明</div>
             <div class="privacy-desc">
@@ -327,8 +379,7 @@
                     <option value="">請選擇...</option>
                     <option value="高一">高一</option>
                     <option value="高二">高二</option>
-                    <option value="高三">高三</option>  
-                    <option value="其他">其他</option>
+                    <option value="高三">高三</option>
                 </select>
             </div>
         </div>
@@ -337,35 +388,35 @@
             <label>你的 MBTI 人格類型 <span style="color:red;">*</span></label>
             <select id="mbti">
                 <option value="">請選擇...</option>
-                <optgroup label=" 理性分析型 (NT) ">
+                <optgroup label="理性分析型 (NT)">
                     <option value="INTJ">INTJ (建築師)</option><option value="INTP">INTP (邏輯學家)</option>
                     <option value="ENTJ">ENTJ (指揮官)</option><option value="ENTP">ENTP (辯論家)</option>
                 </optgroup>
-                <optgroup label=" 理想共情型 (NF) ">
+                <optgroup label="理想共情型 (NF)">
                     <option value="INFJ">INFJ (提倡者)</option><option value="INFP">INFP (調停者)</option>
                     <option value="ENFJ">ENFJ (主人公)</option><option value="ENFP">ENFP (競選者)</option>
                 </optgroup>
-                <optgroup label=" 穩健秩序型 (SJ) ">
+                <optgroup label="穩健秩序型 (SJ)">
                     <option value="ISTJ">ISTJ (物流師)</option><option value="ISFJ">ISFJ (守護者)</option>
                     <option value="ESTJ">ESTJ (總經理)</option><option value="ESFJ">ESFJ (執政官)</option>
                 </optgroup>
-                <optgroup label=" 靈活實踐型 (SP) ">
+                <optgroup label="靈活實踐型 (SP)">
                     <option value="ISTP">ISTP (鑑賞家)</option><option value="ISFP">ISFP (探險家)</option>
                     <option value="ESTP">ESTP (企業家)</option><option value="ESFP">ESFP (表演者)</option>
                 </optgroup>
-                <optgroup label="───── 其他 ─────">
+                <optgroup label="其他">
                     <option value="未測量或不清楚">不清楚 / 忘記了 / 沒測過</option>
                 </optgroup>
             </select>
         </div>
-        
+
         <div class="input-group">
             <label>你的太陽星座 <span style="color:red;">*</span></label>
             <select id="zodiac">
                 <option value="">請選擇...</option>
                 <option value="摩羯座">摩羯座 (Capricorn)</option>
-                 <option value="水瓶座">水瓶座 (Aquarius)</option>
-                 <option value="雙魚座">雙魚座 (Pisces)</option>
+                <option value="水瓶座">水瓶座 (Aquarius)</option>
+                <option value="雙魚座">雙魚座 (Pisces)</option>
                 <option value="牡羊座">牡羊座 (Aries)</option>
                 <option value="金牛座">金牛座 (Taurus)</option>
                 <option value="雙子座">雙子座 (Gemini)</option>
@@ -377,75 +428,76 @@
                 <option value="射手座">射手座 (Sagittarius)</option>    
             </select>
         </div>
-        
+
         <button class="btn" onclick="validateStep1()">開始 5 題直覺測驗</button>
     </div>
-   <!-- Q1 -->
-<div class="step" id="step2">
-    <div class="progress-bar-box"><div class="progress-fill" style="width: 20%;"></div></div>
-    <div class="progress-text">1 / 5</div>
-    <div class="badge-wrapper"><span class="badge">🧩 社交充電站</span></div>
-    <h1>結束超累的校園園遊會，回到家你通常會？</h1>
-    <div class="vs-wrapper">
-        <button class="quiz-btn" onclick="recordAnswer('q1', '獨處充電'); nextStep(3);">躲進房間關燈聽歌，享受一個人的避風港</button>
-        <div class="vs-tag">VS</div>
-        <button class="quiz-btn" onclick="recordAnswer('q1', '群組熱炒'); nextStep(3);">邊回味限時動態，邊在群組跟朋友續攤狂聊</button>
-    </div>
-</div>
 
-<!-- Q2 -->
-<div class="step" id="step3">
-    <div class="progress-bar-box"><div class="progress-fill" style="width: 40%;"></div></div>
-    <div class="progress-text">2 / 5</div>
-    <div class="badge-wrapper"><span class="badge">⚡ 思考專注度</span></div>
-    <h1>段考前複習到一半，腦海突然跳出一個酷想法…</h1>
-    <div class="vs-wrapper">
-        <button class="quiz-btn" onclick="recordAnswer('q2', '拉回現實'); nextStep(4);">「考試要緊！」拉回注意力，按進度劃重點</button>
-        <div class="vs-tag">VS</div>
-        <button class="quiz-btn" onclick="recordAnswer('q2', '順思發散'); nextStep(4);">「這太酷了！」順著靈感天馬行空開始發散</button>
+    <!-- Q1 -->
+    <div class="step" id="step2">
+        <div class="progress-bar-box"><div class="progress-fill" style="width: 20%;"></div></div>
+        <div class="progress-text">1 / 5</div>
+        <div class="badge-wrapper"><span class="badge">🧩 社交充電站</span></div>
+        <h1>結束超累的校園園遊會，回到家你通常會？</h1>
+        <div class="vs-wrapper">
+            <button class="quiz-btn" onclick="recordAnswer('q1', '獨處充電'); nextStep(3);">躲進房間關燈聽歌，享受一個人的避風港</button>
+            <div class="vs-tag">VS</div>
+            <button class="quiz-btn" onclick="recordAnswer('q1', '群組熱炒'); nextStep(3);">邊回味限時動態，邊在群組跟朋友續攤狂聊</button>
+        </div>
     </div>
-</div>
 
-<!-- Q3 -->
-<div class="step" id="step4">
-    <div class="progress-bar-box"><div class="progress-fill" style="width: 60%;"></div></div>
-    <div class="progress-text">3 / 5</div>
-    <div class="badge-wrapper"><span class="badge">🎯 團隊溝通</span></div>
-    <h1>分組報告有組員進度落後且品質欠佳，你會？</h1>
-    <div class="vs-wrapper">
-        <button class="quiz-btn" onclick="recordAnswer('q3', '對事理性'); nextStep(5);">對事不對人，直接指出問題並要求限時改正</button>
-        <div class="vs-tag">VS</div>
-        <button class="quiz-btn" onclick="recordAnswer('q3', '同理關懷'); nextStep(5);">先關心他的狀況，委婉給予協助與建議</button>
+    <!-- Q2 -->
+    <div class="step" id="step3">
+        <div class="progress-bar-box"><div class="progress-fill" style="width: 40%;"></div></div>
+        <div class="progress-text">2 / 5</div>
+        <div class="badge-wrapper"><span class="badge">⚡ 思考專注度</span></div>
+        <h1>段考前複習到一半，腦海突然跳出一個酷想法…</h1>
+        <div class="vs-wrapper">
+            <button class="quiz-btn" onclick="recordAnswer('q2', '拉回現實'); nextStep(4);">「考試要緊！」拉回注意力，按進度劃重點</button>
+            <div class="vs-tag">VS</div>
+            <button class="quiz-btn" onclick="recordAnswer('q2', '順思發散'); nextStep(4);">「這太酷了！」順著靈感天馬行空開始發散</button>
+        </div>
     </div>
-</div>
 
-<!-- Q4 -->
-<div class="step" id="step5">
-    <div class="progress-bar-box"><div class="progress-fill" style="width: 80%;"></div></div>
-    <div class="progress-text">4 / 5</div>
-    <div class="badge-wrapper"><span class="badge">💬 生活節奏</span></div>
-    <h1>面對難得的連續假期，你習慣如何安排？</h1>
-    <div class="vs-wrapper">
-        <button class="quiz-btn" onclick="recordAnswer('q4', '進度清單'); nextStep(6);">寫好 To-do list，按部就班完成才有成就感</button>
-        <div class="vs-tag">VS</div>
-        <button class="quiz-btn" onclick="recordAnswer('q4', '隨興探索'); nextStep(6);">拒絕被框架約束，看當下心情想做什麼就做什麼</button>
+    <!-- Q3 -->
+    <div class="step" id="step4">
+        <div class="progress-bar-box"><div class="progress-fill" style="width: 60%;"></div></div>
+        <div class="progress-text">3 / 5</div>
+        <div class="badge-wrapper"><span class="badge">🎯 團隊溝通</span></div>
+        <h1>分組報告有組員進度落後且品質欠佳，你會？</h1>
+        <div class="vs-wrapper">
+            <button class="quiz-btn" onclick="recordAnswer('q3', '對事理性'); nextStep(5);">對事不對人，直接指出問題並要求限時改正</button>
+            <div class="vs-tag">VS</div>
+            <button class="quiz-btn" onclick="recordAnswer('q3', '同理關懷'); nextStep(5);">先關心他的狀況，委婉給予協助與建議</button>
+        </div>
     </div>
-</div>
 
-<!-- Q5 -->
-<div class="step" id="step6">
-    <div class="progress-bar-box"><div class="progress-fill" style="width: 100%;"></div></div>
-    <div class="progress-text">5 / 5</div>
-    <div class="badge-wrapper"><span class="badge">🔮 覺醒圖騰擇一</span></div>
-    <h1>憑第一直覺，哪一個圖騰最能代表你的靈魂？</h1>
-    <div class="card-grid" style="margin-top: 16px;">
-        <div class="choice-card card-a" onclick="startAnalysis('A')"><span>🔮 A</span><p>熾烈之火<br><small style="font-size: 0.75rem; opacity: 0.8;">突破與熱情</small></p></div>
-        <div class="choice-card card-b" onclick="startAnalysis('B')"><span>⚡ B</span><p>靜止之岩<br><small style="font-size: 0.75rem; opacity: 0.8;">秩序與原則</small></p></div>
-        <div class="choice-card card-c" onclick="startAnalysis('C')"><span>🌊 C</span><p>深海之鏡<br><small style="font-size: 0.75rem; opacity: 0.8;">洞察與共情</small></p></div>
-        <div class="choice-card card-d" onclick="startAnalysis('D')"><span>🌌 D</span><p>自由之風<br><small style="font-size: 0.75rem; opacity: 0.8;">隨性與可能性</small></p></div>
+    <!-- Q4 -->
+    <div class="step" id="step5">
+        <div class="progress-bar-box"><div class="progress-fill" style="width: 80%;"></div></div>
+        <div class="progress-text">4 / 5</div>
+        <div class="badge-wrapper"><span class="badge">💬 生活節奏</span></div>
+        <h1>面對難得的連續假期，你習慣如何安排？</h1>
+        <div class="vs-wrapper">
+            <button class="quiz-btn" onclick="recordAnswer('q4', '進度清單'); nextStep(6);">寫好 To-do list，按部就班完成才有成就感</button>
+            <div class="vs-tag">VS</div>
+            <button class="quiz-btn" onclick="recordAnswer('q4', '隨興探索'); nextStep(6);">拒絕被框架約束，看當下心情想做什麼就做什麼</button>
+        </div>
     </div>
-</div>
-    
+
+    <!-- Q5 -->
+    <div class="step" id="step6">
+        <div class="progress-bar-box"><div class="progress-fill" style="width: 100%;"></div></div>
+        <div class="progress-text">5 / 5</div>
+        <div class="badge-wrapper"><span class="badge">🔮 覺醒圖騰擇一</span></div>
+        <h1>憑第一直覺，哪一個圖騰最能代表你的靈魂？</h1>
+        <div class="card-grid" style="margin-top: 16px;">
+            <div class="choice-card card-a" onclick="startAnalysis('A')"><span>🔮 A</span><p>熾烈之火<br><small style="font-size: 0.75rem; opacity: 0.8;">突破與熱情</small></p></div>
+            <div class="choice-card card-b" onclick="startAnalysis('B')"><span>⚡ B</span><p>靜止之岩<br><small style="font-size: 0.75rem; opacity: 0.8;">秩序與原則</small></p></div>
+            <div class="choice-card card-c" onclick="startAnalysis('C')"><span>🌊 C</span><p>深海之鏡<br><small style="font-size: 0.75rem; opacity: 0.8;">洞察與共情</small></p></div>
+            <div class="choice-card card-d" onclick="startAnalysis('D')"><span>🌌 D</span><p>自由之風<br><small style="font-size: 0.75rem; opacity: 0.8;">隨性與可能性</small></p></div>
+        </div>
+    </div>
+
     <!-- 加載頁 -->
     <div class="step" id="step7">
         <div class="loader-box">
@@ -460,7 +512,7 @@
         <div class="badge-wrapper"><span class="badge">📊 專屬分析報告</span></div>
         <h1>你的個人深度性格解析</h1>
         <p class="subtitle" id="user-tag-result" style="color: var(--primary); font-weight: 700; margin-bottom: 16px;"></p>
-        
+
         <div class="result-paragraph">
             <div class="result-title">【主要性格解析】</div>
             你是一個外表看起來冷靜穩定、講求和諧的人，但內心其實經常伴隨細微的波動。在團體或人際關係中，你習慣站在不同角度思考，也能敏銳察覺氣氛的變化——你很少只是來享受現成的，當遇到問題時，你往往會忍不住挺身而出、展現出負責任的一面。你習慣將深刻的想法藏在心底，實際說出口的內容往往只是你心中所想的冰山一角。
@@ -476,138 +528,18 @@
             雖然你希望做事有一套明確的 SOP 可以參考，但內心深處又極度抗拒死板的世俗束縛。因為想顧慮的面向與細節太多、想把事情做到最好，有時反而容易讓自己卡在選擇與調整裡，花了很多精力跟自己較勁。面對流於表面的敷衍，內心容易產生本能的懷疑與精神潔癖，這也是讓你感到內心疲累的主因。
         </div>
 
+        <!-- 1-10分 滑桿評分組件 -->
         <div class="rating-box">
-            <label>這份分析符合你真實性格的程度？(1-10分)</label>
-            <div class="scale-btns">
-                <button class="scale-btn" onclick="rate(2, event)">2</button>
-                <button class="scale-btn" onclick="rate(4, event)">4</button>
-                <button class="scale-btn" onclick="rate(6, event)">6</button>
-                <button class="scale-btn" onclick="rate(8, event)">8</button>
-                <button class="scale-btn" onclick="rate(10, event)">10</button>
-            </div>
-        </div>
-
-        <button class="btn" style="margin-top: 20px;" onclick="shareResult()">分享測驗給朋友</button>
-    </div>
-
-    <div class="footer-text">自主學習專案 — 現代青年性格觀察實驗</div>
-</div>
-
-<script>
-    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyt9QeG6zW5xQR-0nm20u7FFoDWsXdoY5heab5lpvtZwD3UC7sBjCwYXp13b3JRVw/exec";
-
-    let userAnswers = {};
-    let currentPayload = {};
-
-    function recordAnswer(question, answer) { userAnswers[question] = answer; }
-
-    function toggleSchoolFields() {
-        const type = document.getElementById('user-type').value;
-        document.getElementById('school-fields').style.display = (type === 'school') ? 'block' : 'none';
-        document.getElementById('external-fields').style.display = (type === 'school') ? 'none' : 'block';
-    }
-
-    function validateStep1() {
-        const userType = document.getElementById('user-type').value;
-        const mbti = document.getElementById('mbti').value;
-        const zodiac = document.getElementById('zodiac').value;
-
-        if (userType === 'school') {
-            const schoolGrade = document.getElementById('school-grade-level').value;
-            const classNum = document.getElementById('class-num').value;
-            const seatNum = document.getElementById('seat-num').value;
+            <label>這份分析符合你真實性格的程度？</label>
             
-            if (!schoolGrade) return alert('請選擇你的年級！');
-            if (!classNum) return alert('請選擇你的班級！');
-            if (!seatNum || seatNum < 1 || seatNum > 50) return alert('請填寫正確的座號（1 ~ 50）！');
-        } else {
-            const schoolName = document.getElementById('school-name').value.trim();
-            const gradeLevel = document.getElementById('grade-level').value;
-            if (!schoolName) return alert('請填寫你的學校名稱！');
-            if (!gradeLevel) return alert('請選擇你的年級！');
-        }
+            <div class="slider-wrapper">
+                <input type="range" id="score-slider" min="1" max="10" value="5" oninput="onSliderMove(this.value)">
+                <div class="slider-labels">
+                    <span>1 分 (很不準)</span>
+                    <span>10 分 (非常準)</span>
+                </div>
+            </div>
 
-        if (!mbti) return alert('請選擇你的 MBTI 人格類型！');
-        if (!zodiac) return alert('請選擇你的太陽星座！');
-
-        nextStep(2);
-    }
-
-    function nextStep(stepNum) {
-        document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
-        document.getElementById('step' + stepNum).classList.add('active');
-        window.scrollTo(0,0);
-    }
-
-    function startAnalysis(choice) {
-        userAnswers['q5'] = choice;
-        nextStep(7);
-        
-        const userType = document.getElementById('user-type').value;
-        const isSchool = userType === 'school';
-        
-        currentPayload = {
-            userType: isSchool ? '本校學生' : '外校學生',
-            schoolOrClass: isSchool ? document.getElementById('class-num').value + ' 班' : document.getElementById('school-name').value,
-            seatOrGrade: isSchool ? (document.getElementById('school-grade-level').value + ' ' + document.getElementById('seat-num').value + ' 號') : document.getElementById('grade-level').value,
-            mbti: document.getElementById('mbti').value,
-            zodiac: document.getElementById('zodiac').value,
-            choice: `Q1:${userAnswers['q1']||''} | Q2:${userAnswers['q2']||''} | Q3:${userAnswers['q3']||''} | Q4:${userAnswers['q4']||''} | Q5:${choice}`,
-            rating: "尚未評分"
-        };
-
-        sendToGoogleSheet(currentPayload);
-
-        setTimeout(() => {
-            const mbti = currentPayload.mbti;
-            const zodiac = currentPayload.zodiac;
-            let tagText = (mbti === '未測量或不清楚') 
-                ? `【類型】直覺潛能型 × ${zodiac} (維度 ${choice})`
-                : `【類型】${mbti} × ${zodiac} (維度 ${choice})`;
-
-            document.getElementById('user-tag-result').innerText = tagText;
-            nextStep(8);
-        }, 1800);
-    }
-
-    function rate(score, event) {
-        document.querySelectorAll('.scale-btn').forEach(btn => btn.classList.remove('active'));
-        if (event && event.target) event.target.classList.add('active');
-
-        if (currentPayload) {
-            currentPayload.rating = score + " 分";
-            sendToGoogleSheet(currentPayload);
-        }
-        alert(`感謝評分！你給出了 ${score} 分，數據已納入研究集算。`);
-    }
-
-    function sendToGoogleSheet(payload) {
-        if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes("你的正確_APPS_SCRIPT_ID")) {
-            console.warn("尚未設定正確的 GOOGLE_SCRIPT_URL 網址！");
-            return;
-        }
-
-        fetch(GOOGLE_SCRIPT_URL, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        }).catch(err => console.error("傳送至 Google 試算表失敗:", err));
-    }
-
-    function shareResult() {
-        const currentUrl = window.location.href;
-        if (navigator.share && window.isSecureContext) {
-            navigator.share({
-                title: '【校園大數據】現代青年性格與行為深度交叉分析',
-                text: '來測測看你的性格與社交行為交叉分析報告！',
-                url: currentUrl
-            }).catch(() => {});
-        } else {
-            prompt("請複製下方連結分享給朋友：", currentUrl);
-        }
-    }
-</script>
-
-</body>
-</html>
+            <div id="score-display" class="score-display-text">👈 請拉動小白點進行評分</div>
+            
+            <button id="submit-score-btn" class="btn" style="margin-top: 12px; background-color: var(--primary); opacity
