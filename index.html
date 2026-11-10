@@ -614,36 +614,42 @@
     }
 
     function startAnalysis(choice) {
-        userAnswers['q5'] = choice;
-        nextStep(7);
+    userAnswers['q5'] = choice;
+    nextStep(7);
 
-        const userType = document.getElementById('user-type').value;
-        const isSchool = userType === 'school';
+    const userType = document.getElementById('user-type').value;
+    const isSchool = userType === 'school';
 
-        currentPayload = {
-            userType: isSchool ? '本校學生' : '外校學生',
-            schoolOrClass: isSchool ? document.getElementById('class-num').value + ' 班' : '外校',
-            seatOrGrade: isSchool ? (document.getElementById('school-grade-level').value + ' ' + document.getElementById('seat-num').value + ' 號') : document.getElementById('grade-level').value,
-            mbti: document.getElementById('mbti').value,
-            zodiac: document.getElementById('zodiac').value,
-            choice: `Q1:${userAnswers['q1']||''} | Q2:${userAnswers['q2']||''} | Q3:${userAnswers['q3']||''} | Q4:${userAnswers['q4']||''} | Q5:${choice}`,
-            rating: "尚未評分"
-        };
+    // 封裝完全對應 A ~ N 欄的 JSON 資料
+    currentPayload = {
+        userType: isSchool ? '本校學生' : '外校學生',
+        grade: isSchool ? document.getElementById('school-grade-level').value : document.getElementById('grade-level').value,
+        classNum: isSchool ? document.getElementById('class-num').value : '外校',
+        seatNum: isSchool ? document.getElementById('seat-num').value : '',
+        mbti: document.getElementById('mbti').value,
+        zodiac: document.getElementById('zodiac').value,
+        q1: userAnswers['q1'] || '',
+        q2: userAnswers['q2'] || '',
+        q3: userAnswers['q3'] || '',
+        q4: userAnswers['q4'] || '',
+        q5: choice,
+        rating: "尚未評分",
+        feedback: ""
+    };
 
-        sendToGoogleSheet(currentPayload);
+    sendToGoogleSheet(currentPayload);
 
-        setTimeout(() => {
-            const mbti = currentPayload.mbti;
-            const zodiac = currentPayload.zodiac;
-            let tagText = (mbti === '未測量或不清楚') 
-                ? `【類型】直覺潛能型 × ${zodiac} (維度 ${choice})`
-                : `【類型】${mbti} × ${zodiac} (維度 ${choice})`;
+    setTimeout(() => {
+        const mbti = currentPayload.mbti;
+        const zodiac = currentPayload.zodiac;
+        let tagText = (mbti === '未測量或不清楚') 
+            ? `【類型】直覺潛能型 × ${zodiac} (維度 ${choice})`
+            : `【類型】${mbti} × ${zodiac} (維度 ${choice})`;
 
-            document.getElementById('user-tag-result').innerText = tagText;
-            nextStep(8);
-        }, 1800);
-    }
-
+        document.getElementById('user-tag-result').innerText = tagText;
+        nextStep(8);
+    }, 1800);
+}
     // 當使用者拉動滑桿時觸發
     function onSliderMove(val) {
         if (hasSubmittedRating) return;
@@ -662,67 +668,63 @@
 
     // 點擊按鈕送出評分
     function submitSliderRating() {
-        if (hasSubmittedRating) return;
+    if (hasSubmittedRating) return;
 
-        if (!hasMovedSlider) {
-            alert("請先拉動小白點選擇評分！");
-            return;
-        }
-
-        hasSubmittedRating = true;
-
-        if (currentPayload) {
-            currentPayload.rating = currentSliderScore + " 分";
-            sendToGoogleSheet(currentPayload);
-        }
-        
-        alert(`感謝評分！你給出了 ${currentSliderScore} 分，數據已納入研究集算。`);
-        
-        // 1. 鎖定評分按鈕
-        const btn = document.getElementById('submit-score-btn');
-        btn.innerText = "已完成評分 ✓";
-        btn.disabled = true;
-        btn.style.opacity = '0.6';
-        btn.style.cursor = 'default';
-
-        // 2. 鎖定滑桿
-        const slider = document.getElementById('score-slider');
-        slider.disabled = true;
-        slider.style.cursor = 'default';
-
-        // 3. 更新提示文字
-        document.getElementById('score-display').innerText = `評分已鎖定： ${currentSliderScore} 分`;
-
-        // 4. 動態展開留言區塊並滾動視線
-        const feedbackSec = document.getElementById('feedback-section');
-        feedbackSec.style.display = 'block';
-        feedbackSec.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    if (!hasMovedSlider) {
+        alert("請先拉動小白點選擇評分！");
+        return;
     }
+
+    hasSubmittedRating = true;
+
+    if (currentPayload) {
+        currentPayload.rating = currentSliderScore + " 分";
+        sendToGoogleSheet(currentPayload);
+    }
+    
+    alert(`感謝評分！你給出了 ${currentSliderScore} 分，數據已納入研究集算。`);
+    
+    // 鎖定按鈕與滑桿
+    const btn = document.getElementById('submit-score-btn');
+    btn.innerText = "已完成評分 ✓";
+    btn.disabled = true;
+    btn.style.opacity = '0.6';
+    btn.style.cursor = 'default';
+
+    const slider = document.getElementById('score-slider');
+    slider.disabled = true;
+    slider.style.cursor = 'default';
+
+    document.getElementById('score-display').innerText = `評分已鎖定： ${currentSliderScore} 分`;
+
+    // 展開質性留言欄
+    const feedbackSec = document.getElementById('feedback-section');
+    feedbackSec.style.display = 'block';
+    feedbackSec.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
 
     // 新增：提交留言函式
     function submitFeedback() {
-        const text = document.getElementById('feedback-text').value.trim();
-        if (!text) {
-            alert("請先輸入想分享的文字再送出喔！");
-            return;
-        }
-
-        if (currentPayload) {
-            // 將留言附加進評分資訊中重新更新/註記
-            currentPayload.rating = `${currentSliderScore} 分 | 留言: ${text}`;
-            sendToGoogleSheet(currentPayload);
-        }
-
-        alert("非常感謝你的真實回饋！這些留言對我們的自主學習專案非常有幫助 ❤️");
-
-        const btn = document.getElementById('submit-feedback-btn');
-        btn.innerText = "留言已送出 ✓";
-        btn.disabled = true;
-        btn.style.opacity = '0.6';
-        btn.style.cursor = 'default';
-        document.getElementById('feedback-text').disabled = true;
+    const text = document.getElementById('feedback-text').value.trim();
+    if (!text) {
+        alert("請先輸入想分享的文字再送出喔！");
+        return;
     }
 
+    if (currentPayload) {
+        currentPayload.feedback = text;
+        sendToGoogleSheet(currentPayload);
+    }
+
+    alert("非常感謝你的真實回饋！這些留言對我們的自主學習專案非常有幫助 ❤️");
+
+    const btn = document.getElementById('submit-feedback-btn');
+    btn.innerText = "留言已送出 ✓";
+    btn.disabled = true;
+    btn.style.opacity = '0.6';
+    btn.style.cursor = 'default';
+    document.getElementById('feedback-text').disabled = true;
+}
     function sendToGoogleSheet(payload) {
         if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes("你的正確_APPS_SCRIPT_ID")) {
             console.warn("尚未設定正確的 GOOGLE_SCRIPT_URL 網址！");
